@@ -11,7 +11,7 @@ A debug toolbar for [dape](https://github.com/svaante/dape). It provides a visua
 
 ## Screenshot
 
-![Image](https://github.com/user-attachments/assets/f24a101e-bb9a-4aca-8411-79b2c6be3803)
+<img src="https://github.com/user-attachments/assets/f24a101e-bb9a-4aca-8411-79b2c6be3803" width=70% height=70%>
 
 ## Installation
 
