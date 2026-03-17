@@ -75,7 +75,8 @@
     (step-in . ("nf-cod-debug_step_into" dape-step-in "Step Into" nerd-icons-blue))
     (step-out . ("nf-cod-debug_step_out" dape-step-out "Step Out" nerd-icons-blue))
     (restart . ("nf-cod-debug_restart" dape-restart "Restart" nerd-icons-green))
-    (quit . ("nf-cod-debug_stop" dape-quit "Quit" nerd-icons-red)))
+    (quit . ("nf-cod-debug_stop" dape-quit "Quit" nerd-icons-red))
+    (disconnect . ("nf-cod-debug_disconnect" dape-disconnect-quit "Disconnect" nerd-icons-orange)))
   "Alist of toolbar buttons.
 Each entry is (KEY . (ICON COMMAND HELP-STRING FACE))."
   :type '(alist :key-type symbol :value-type (group string function string face))
@@ -116,6 +117,7 @@ WINDOW, POS, and ACTION are arguments for cursor sensor function."
     (define-key map "o" #'dape-step-out)
     (define-key map "r" #'dape-restart)
     (define-key map "q" #'dape-quit)
+    (define-key map "D" #'dape-disconnect-quit)
     map)
   "Keymap for `dape-toolbar-info-mode'.")
 
