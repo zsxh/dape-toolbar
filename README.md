@@ -43,24 +43,26 @@ Download `dape-toolbar.el` and add it to your `load-path` or install it via `pac
 
 ### Built-in Buttons
 
-| Key         | Command         | Description        |
-|-------------|-----------------|--------------------|
-| `continue`  | `dape-continue` | Continue execution |
-| `step-over` | `dape-next`     | Step over          |
-| `step-in`   | `dape-step-in`  | Step into          |
-| `step-out`  | `dape-step-out` | Step out           |
-| `restart`   | `dape-restart`  | Restart debugging  |
-| `quit`      | `dape-quit`     | Quit debugging     |
+| Key          | Command                | Description        |
+|--------------|------------------------|--------------------|
+| `continue`   | `dape-continue`        | Continue execution |
+| `step-over`  | `dape-next`            | Step over          |
+| `step-in`    | `dape-step-in`         | Step into          |
+| `step-out`   | `dape-step-out`        | Step out           |
+| `restart`    | `dape-restart`         | Restart debugging  |
+| `quit`       | `dape-quit`            | Quit debugging     |
+| `disconnect` | `dape-disconnect-quit` | Disconnect adapter |
 
 ### Modify Buttons
 
-Each button entry has the structure: `(KEY . (ICON COMMAND HELP-STRING FACE))`
+Each button entry has the structure: `(KEY . (ICON COMMAND HELP-STRING FACE [PREDICATE]))`
 
 - `KEY` - Symbol to identify the button
 - `ICON` - Nerd Icons codicon name (e.g., `"nf-cod-debug_continue"`)
 - `COMMAND` - Interactive function to call
 - `HELP-STRING` - Tooltip text
 - `FACE` - Face for the button color
+- `PREDICATE` - Optional function that returns non-nil to show the button
 
 ```elisp
 ;; Modify a specific button
@@ -69,6 +71,11 @@ Each button entry has the structure: `(KEY . (ICON COMMAND HELP-STRING FACE))`
 
 ;; Add a new button
 (push '(my-action . ("nf-cod-run_all" my-command "Run" nerd-icons-green))
+      dape-toolbar-buttons)
+
+;; Add a button with visibility predicate
+(push '(conditional-btn . ("nf-cod-check" my-command "Check" nerd-icons-blue
+                          (lambda () (boundp 'some-var))))
       dape-toolbar-buttons)
 
 ;; Remove a button

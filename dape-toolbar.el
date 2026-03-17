@@ -5,7 +5,7 @@
 ;; Author: zsxh <bnbvbchen@gmail.com>
 ;; Maintainer: zsxh <bnbvbchen@gmail.com>
 ;; URL: https://github.com/zsxh/dape-toolbar
-;; Version: 0.0.1
+;; Version: 0.0.2
 ;; Package-Requires: ((emacs "29.2") (compat "30.1.0.1") (dape "0.26.0") (nerd-icons "0.1.0"))
 ;; Keywords: convenience tools
 
@@ -43,11 +43,16 @@
 ;;   (push '(my-action . ("nf-cod-run_all" my-command "Run" nerd-icons-green))
 ;;         dape-toolbar-buttons)
 ;;
+;;   ;; Add a button with visibility predicate
+;;   (push '(conditional-btn . ("nf-cod-check" my-command "Check" nerd-icons-blue
+;;                             (lambda () (boundp 'some-var))))
+;;         dape-toolbar-buttons)
+;;
 ;;   ;; Remove a button
 ;;   (setq dape-toolbar-buttons
 ;;         (assq-delete-all 'quit dape-toolbar-buttons))
 ;;
-;; Available button keys: continue, next, step-in, step-out, restart, quit
+;; Available button keys: continue, step-over, step-in, step-out, restart, quit, disconnect
 ;;
 
 ;;; Code:
@@ -119,7 +124,7 @@ WINDOW, POS, and ACTION are arguments for cursor sensor function."
                               (nerd-icons-codicon icon)
                             (error (propertize "?" 'face 'warning)))))
             (insert-text-button
-             (nerd-icons-codicon icon)
+             btn-text
              'action (lambda (_button) (call-interactively command))
              'help-echo help
              'cursor-sensor-functions `(dape-toolbar--show-help)

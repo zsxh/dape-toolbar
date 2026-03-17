@@ -1,7 +1,7 @@
 ;; -*- mode: eask; lexical-binding: t -*-
 
 (package "dape-toolbar"
-         "0.0.1"
+         "0.0.2"
          "Debug toolbar for dape")
 
 (website-url "https://github.com/zsxh/dape-toolbar")
