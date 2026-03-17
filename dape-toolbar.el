@@ -78,8 +78,20 @@
     (quit . ("nf-cod-debug_stop" dape-quit "Quit" nerd-icons-red))
     (disconnect . ("nf-cod-debug_disconnect" dape-disconnect-quit "Disconnect" nerd-icons-orange)))
   "Alist of toolbar buttons.
-Each entry is (KEY . (ICON COMMAND HELP-STRING FACE))."
-  :type '(alist :key-type symbol :value-type (group string function string face))
+Each entry is (KEY . (ICON COMMAND HELP-STRING FACE [PREDICATE])).
+PREDICATE is an optional function that returns non-nil to show the button."
+  :type
+  '(alist :key-type (symbol :tag "Button ID")
+          :value-type
+          (list :tag "Button Properties"
+            (string :tag "Icon")
+            (function :tag "Command")
+            (string :tag "Help Tooltip")
+            (face :tag "Icon Face")
+            (choice :tag "Visibility Predicate"
+                    :value nil
+                    (const :tag "Always Show" nil)
+                    (function :tag "Predicate Function"))))
   :group 'dape-toolbar)
 
 ;;; Functions
@@ -97,17 +109,22 @@ WINDOW, POS, and ACTION are arguments for cursor sensor function."
   "Insert toolbar buttons in current buffer."
   (let ((first t))
     (dolist (spec dape-toolbar-buttons)
-      (pcase-let ((`(,icon ,command ,help ,face) (cdr spec)))
-        (unless first
-          (insert "  "))
-        (insert-text-button
-         (nerd-icons-codicon icon)
-         'action (lambda (_button) (call-interactively command))
-         'help-echo help
-         'cursor-sensor-functions `(dape-toolbar--show-help)
-         'face `(:inherit ,face :height ,dape-toolbar-button-height)
-         'mouse-face 'highlight)
-        (setq first nil)))))
+      (pcase-let ((`(,icon ,command ,help ,face ,predicate) (cdr spec)))
+        (when (or (not predicate)
+                  (and (functionp predicate) (funcall predicate)))
+          (unless first
+            (insert "  "))
+          (setq first nil)
+          (let ((btn-text (condition-case nil
+                              (nerd-icons-codicon icon)
+                            (error (propertize "?" 'face 'warning)))))
+            (insert-text-button
+             (nerd-icons-codicon icon)
+             'action (lambda (_button) (call-interactively command))
+             'help-echo help
+             'cursor-sensor-functions `(dape-toolbar--show-help)
+             'face `(:inherit ,face :height ,dape-toolbar-button-height)
+             'mouse-face 'highlight)))))))
 
 (defvar dape-toolbar-info-mode-map
   (let ((map (make-sparse-keymap)))
@@ -132,7 +149,10 @@ WINDOW, POS, and ACTION are arguments for cursor sensor function."
   (run-at-time 0 nil
                (lambda (buf)
                  (when (buffer-live-p buf)
-                   (fit-window-to-buffer (get-buffer-window buf))))
+                   (let ((win (get-buffer-window buf t)))
+                     (when (window-live-p win)
+                       (ignore-errors
+                         (fit-window-to-buffer win))))))
                (current-buffer)))
 
 
